@@ -1,10 +1,10 @@
 import electron from "electron";
 
+import { ipcOn, ipcInvoke } from "./src/ipc-helpers";
+
 electron.contextBridge.exposeInMainWorld("electron", {
-  subscribeStatistics: (callback: (statistics: any) => void) => {
-    electron.ipcRenderer.on("statistics", (_, data) => {
-      callback(data);
-    });
+  subscribeStatistics: (callback) => {
+    ipcOn("statistics", (stats) => callback(stats));
   },
-  getStaticData: () => electron.ipcRenderer.invoke("getStaticData")
-});
+  getStaticData: () => ipcInvoke("staticData")
+} satisfies Window["electron"]);
